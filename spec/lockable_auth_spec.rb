@@ -22,7 +22,7 @@ class LockableAuthDummyBaseModel
 end
 
 class LockableAuthDummyModel < LockableAuthDummyBaseModel
-  include LockableAuth::Model
+  include LockableAuth
 end
 
 RSpec.describe LockableAuthDummyModel do
@@ -203,7 +203,7 @@ RSpec.describe LockableAuthDummyModel do
 
     context 'when maximum_attempts is 0 duration' do
       before { LockableAuthDummyModel.unlock_in = 0.second }
-      after { LockableAuthDummyModel.unlock_in = LockableAuth::Model::DEFAULT_UNLOCK_IN }
+      after { LockableAuthDummyModel.unlock_in = LockableAuth::DEFAULT_UNLOCK_IN }
 
       let(:locked_at) { nil }
 
