@@ -56,11 +56,11 @@ module KnockLockable
     protected
 
     def attempts_exceeded?
-      self.failed_attempts >= self.class.maximum_attempts
+      (self.class.maximum_attempts != 0) and (self.failed_attempts >= self.class.maximum_attempts)
     end
 
     def lock_expired?
-      locked_at && locked_at < self.class.unlock_in.ago
+      (self.class.unlock_in.to_i == 0) or (locked_at && locked_at < self.class.unlock_in.ago)
     end
   end
 end

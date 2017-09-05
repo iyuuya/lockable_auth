@@ -76,25 +76,19 @@ RSpec.describe KnockLockableDummyModel do
     end
 
     context 'when locked_at is before locked_in.ago' do
-      let(:locked_at) { Time.now.utc }
-
-      before { KnockLockableDummyModel.unlock_in = 1.second }
+      let(:locked_at) { KnockLockableDummyModel.unlock_in.ago + 1.second }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when locked_at is on locked_in.ago' do
-      let(:locked_at) { Time.now.utc }
-
-      before { KnockLockableDummyModel.unlock_in = 0.second }
+      let(:locked_at) { KnockLockableDummyModel.unlock_in.ago }
 
       it { is_expected.to be_falsy }
     end
 
     context 'when locked_at is after locked_in.ago' do
-      let(:locked_at) { Time.now.utc }
-
-      before { KnockLockableDummyModel.unlock_in = -1.second }
+      let(:locked_at) { KnockLockableDummyModel.unlock_in.ago - 1.second }
 
       it { is_expected.to be_falsy }
     end
@@ -191,6 +185,53 @@ RSpec.describe KnockLockableDummyModel do
       let(:failed_attempts) { KnockLockableDummyModel.maximum_attempts - 1 }
 
       it { is_expected.to be_falsy }
+    end
+
+    context 'when maximum_attempts is 0' do
+      let(:failed_attempts) { 0 }
+
+      before { KnockLockableDummyModel.maximum_attempts = 0 }
+
+      it { is_expected.to be_falsy }
+    end
+  end
+
+  describe '#lock_expired?' do
+    subject { dummy.send(:lock_expired?) }
+
+    let(:dummy) { KnockLockableDummyModel.new(locked_at: locked_at) }
+
+    context 'when maximum_attempts is 0 duration' do
+      before { KnockLockableDummyModel.unlock_in = 0.second }
+      after { KnockLockableDummyModel.unlock_in = KnockLockable::Model::DEFAULT_UNLOCK_IN }
+
+      let(:locked_at) { nil }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when locked_at is nil' do
+      let(:locked_at) { nil }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when locked_at is before locked_in.ago' do
+      let(:locked_at) { KnockLockableDummyModel.unlock_in.ago + 1.second }
+
+      it { is_expected.to be_falsy }
+    end
+
+    context 'when locked_at is on locked_in.ago' do
+      let(:locked_at) { KnockLockableDummyModel.unlock_in.ago }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when locked_at is after locked_in.ago' do
+      let(:locked_at) { KnockLockableDummyModel.unlock_in.ago - 1.second }
+
+      it { is_expected.to be_truthy }
     end
   end
 end
