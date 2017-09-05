@@ -1,13 +1,13 @@
-# KnockLockable
+# LockableAuth
 
-Account lock with [knock](https://github.com/nsarno/knock/)
+Lock when authentication fails.
 
 ## Installation
 
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'knock_lockable'
+gem 'lockable'
 ```
 
 And then execute:
@@ -16,7 +16,7 @@ And then execute:
 
 Or install it yourself as:
 
-    $ gem install knock_lockable
+    $ gem install lockable_auth
 
 ## Usage
 
@@ -41,7 +41,7 @@ end
 class User < ApplicationRecord
   has_secure_password
 
-  include KnockLockable::Model # Please add after has_secure_password
+  include LockableAuth::Model # Please add after has_secure_password
 end
 ```
 
@@ -69,7 +69,7 @@ User.unlockn_in = 1.hour # Default 1 hour. Disable lock when this parameter is 0
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/iyuuya/knock_lockable.
+Bug reports and pull requests are welcome on GitHub at https://github.com/iyuuya/lockable_auth.
 
 ## License
 

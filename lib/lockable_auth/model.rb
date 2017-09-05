@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module KnockLockable
+module LockableAuth
   module Model
     DEFAULT_MAXIMUM_ATTEMPTS = 5
     DEFAULT_UNLOCK_IN = 1.hour

@@ -2,7 +2,7 @@
 
 require 'bundler/setup'
 require 'timecop'
-require 'knock_lockable'
+require 'lockable_auth'
 
 RSpec.configure do |config|
   # Enable flags like --only-failures and --next-failure

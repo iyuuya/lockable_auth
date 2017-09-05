@@ -3,7 +3,7 @@
 require 'spec_helper'
 require 'active_model'
 
-class KnockLockableDummyBaseModel
+class LockableAuthDummyBaseModel
   include ActiveModel::Model
 
   attr_accessor :failed_attempts, :locked_at
@@ -21,27 +21,27 @@ class KnockLockableDummyBaseModel
   end
 end
 
-class KnockLockableDummyModel < KnockLockableDummyBaseModel
-  include KnockLockable::Model
+class LockableAuthDummyModel < LockableAuthDummyBaseModel
+  include LockableAuth::Model
 end
 
-RSpec.describe KnockLockableDummyModel do
+RSpec.describe LockableAuthDummyModel do
   describe 'class accessor' do
     describe '.maximum_attempts' do
       it 'should default value is 5' do
-        expect(KnockLockableDummyModel.maximum_attempts).to eq 5
+        expect(LockableAuthDummyModel.maximum_attempts).to eq 5
       end
     end
 
     describe '.unlock_in' do
       it 'should default vlaue is 1 hour' do
-        expect(KnockLockableDummyModel.unlock_in).to eq 1.hour
+        expect(LockableAuthDummyModel.unlock_in).to eq 1.hour
       end
     end
   end
 
   describe '#lock_access!' do
-    let(:dummy) { KnockLockableDummyModel.new }
+    let(:dummy) { LockableAuthDummyModel.new }
 
     before { Timecop.freeze }
     after { Timecop.return }
@@ -54,7 +54,7 @@ RSpec.describe KnockLockableDummyModel do
   end
 
   describe '#unlock_access!' do
-    let(:dummy) { KnockLockableDummyModel.new(locked_at: Time.now, failed_attempts: 5) }
+    let(:dummy) { LockableAuthDummyModel.new(locked_at: Time.now, failed_attempts: 5) }
 
     it 'should reset the locked_at and failed_attempts column' do
       expect(dummy).to receive(:save).with(validate: false)
@@ -67,7 +67,7 @@ RSpec.describe KnockLockableDummyModel do
   describe '#access_locked?' do
     subject { dummy.access_locked? }
 
-    let(:dummy) { KnockLockableDummyModel.new(locked_at: locked_at) }
+    let(:dummy) { LockableAuthDummyModel.new(locked_at: locked_at) }
 
     context 'when locked_at is nil' do
       let(:locked_at) { nil }
@@ -76,19 +76,19 @@ RSpec.describe KnockLockableDummyModel do
     end
 
     context 'when locked_at is before locked_in.ago' do
-      let(:locked_at) { KnockLockableDummyModel.unlock_in.ago + 1.second }
+      let(:locked_at) { LockableAuthDummyModel.unlock_in.ago + 1.second }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when locked_at is on locked_in.ago' do
-      let(:locked_at) { KnockLockableDummyModel.unlock_in.ago }
+      let(:locked_at) { LockableAuthDummyModel.unlock_in.ago }
 
       it { is_expected.to be_falsy }
     end
 
     context 'when locked_at is after locked_in.ago' do
-      let(:locked_at) { KnockLockableDummyModel.unlock_in.ago - 1.second }
+      let(:locked_at) { LockableAuthDummyModel.unlock_in.ago - 1.second }
 
       it { is_expected.to be_falsy }
     end
@@ -97,7 +97,7 @@ RSpec.describe KnockLockableDummyModel do
   describe '#authenticate(unencrypted_password)' do
     subject { dummy.authenticate('password') }
 
-    let(:dummy) { KnockLockableDummyModel.new(failed_attempts: 0) }
+    let(:dummy) { LockableAuthDummyModel.new(failed_attempts: 0) }
 
     context 'when not persisted' do
       before { expect(dummy).to receive(:persisted?).and_return(false) }
@@ -167,22 +167,22 @@ RSpec.describe KnockLockableDummyModel do
   describe '#attempts_exceeded?' do
     subject { dummy.send(:attempts_exceeded?) }
 
-    let(:dummy) { KnockLockableDummyModel.new(failed_attempts: failed_attempts) }
+    let(:dummy) { LockableAuthDummyModel.new(failed_attempts: failed_attempts) }
 
     context 'when failed_attempts is greater than maximum_attempts' do
-      let(:failed_attempts) { KnockLockableDummyModel.maximum_attempts + 1 }
+      let(:failed_attempts) { LockableAuthDummyModel.maximum_attempts + 1 }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when failed_attempts equals maximum_attempts' do
-      let(:failed_attempts) { KnockLockableDummyModel.maximum_attempts }
+      let(:failed_attempts) { LockableAuthDummyModel.maximum_attempts }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when failed_attempts is less than maximum_attempts' do
-      let(:failed_attempts) { KnockLockableDummyModel.maximum_attempts - 1 }
+      let(:failed_attempts) { LockableAuthDummyModel.maximum_attempts - 1 }
 
       it { is_expected.to be_falsy }
     end
@@ -190,7 +190,7 @@ RSpec.describe KnockLockableDummyModel do
     context 'when maximum_attempts is 0' do
       let(:failed_attempts) { 0 }
 
-      before { KnockLockableDummyModel.maximum_attempts = 0 }
+      before { LockableAuthDummyModel.maximum_attempts = 0 }
 
       it { is_expected.to be_falsy }
     end
@@ -199,11 +199,11 @@ RSpec.describe KnockLockableDummyModel do
   describe '#lock_expired?' do
     subject { dummy.send(:lock_expired?) }
 
-    let(:dummy) { KnockLockableDummyModel.new(locked_at: locked_at) }
+    let(:dummy) { LockableAuthDummyModel.new(locked_at: locked_at) }
 
     context 'when maximum_attempts is 0 duration' do
-      before { KnockLockableDummyModel.unlock_in = 0.second }
-      after { KnockLockableDummyModel.unlock_in = KnockLockable::Model::DEFAULT_UNLOCK_IN }
+      before { LockableAuthDummyModel.unlock_in = 0.second }
+      after { LockableAuthDummyModel.unlock_in = LockableAuth::Model::DEFAULT_UNLOCK_IN }
 
       let(:locked_at) { nil }
 
@@ -217,19 +217,19 @@ RSpec.describe KnockLockableDummyModel do
     end
 
     context 'when locked_at is before locked_in.ago' do
-      let(:locked_at) { KnockLockableDummyModel.unlock_in.ago + 1.second }
+      let(:locked_at) { LockableAuthDummyModel.unlock_in.ago + 1.second }
 
       it { is_expected.to be_falsy }
     end
 
     context 'when locked_at is on locked_in.ago' do
-      let(:locked_at) { KnockLockableDummyModel.unlock_in.ago }
+      let(:locked_at) { LockableAuthDummyModel.unlock_in.ago }
 
       it { is_expected.to be_truthy }
     end
 
     context 'when locked_at is after locked_in.ago' do
-      let(:locked_at) { KnockLockableDummyModel.unlock_in.ago - 1.second }
+      let(:locked_at) { LockableAuthDummyModel.unlock_in.ago - 1.second }
 
       it { is_expected.to be_truthy }
     end

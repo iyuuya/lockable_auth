@@ -2,17 +2,17 @@
 
 lib = File.expand_path('../lib', __FILE__)
 $LOAD_PATH.unshift(lib) unless $LOAD_PATH.include?(lib)
-require 'knock_lockable/version'
+require 'lockable_auth/version'
 
 Gem::Specification.new do |spec|
-  spec.name          = 'knock_lockable'
-  spec.version       = KnockLockable::VERSION
+  spec.name          = 'lockable_auth'
+  spec.version       = LockableAuth::VERSION
   spec.authors       = ['iyuuya']
   spec.email         = ['i.yuuya@gmail.com']
 
-  spec.summary       = 'Account lock with knock'
-  spec.description   = 'Account lock with knock'
-  spec.homepage      = 'https://github.com/iyuuya/knock_lockable'
+  spec.summary       = 'Lock when authentication fails'
+  spec.description   = 'Lock when authentication fails'
+  spec.homepage      = 'https://github.com/iyuuya/lockable_auth'
   spec.license       = 'MIT'
 
   spec.files         = `git ls-files -z`.split("\x0").reject do |f|
@@ -21,7 +21,6 @@ Gem::Specification.new do |spec|
   spec.test_files    = `git ls-files -z -- spec/*`.split("\0")
   spec.require_paths = ['lib']
 
-  spec.add_dependency 'knock', '~> 1.5'
   spec.add_dependency 'rails', '>= 4.2'
   spec.add_development_dependency 'bundler', '~> 1.15'
   spec.add_development_dependency 'rake', '~> 10.0'
