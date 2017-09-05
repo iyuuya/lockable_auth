@@ -39,6 +39,7 @@ module KnockLockable
       unlock_access! if lock_expired?
 
       if super && !access_locked?
+        unlock_access!
         self
       else
         self.failed_attempts ||= 0

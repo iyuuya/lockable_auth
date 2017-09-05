@@ -117,13 +117,14 @@ RSpec.describe KnockLockableDummyModel do
       context 'when lock expired' do
         it do
           expect(dummy).to receive(:lock_expired?).and_return(true)
-          expect(dummy).to receive(:unlock_access!)
+          expect(dummy).to receive(:unlock_access!).at_least(:once)
           subject
         end
       end
 
       context 'when not lock expired' do
         it do
+          allow(dummy).to receive(:access_locked?).and_return(true)
           expect(dummy).to receive(:lock_expired?).and_return(false)
           expect(dummy).to_not receive(:unlock_access!)
           subject
@@ -133,7 +134,10 @@ RSpec.describe KnockLockableDummyModel do
       context 'when not access locked' do
         before { expect(dummy).to receive(:access_locked?).and_return(false) }
 
-        it { is_expected.to be_truthy }
+        it do
+          expect(dummy).to receive(:unlock_access!)
+          is_expected.to be_truthy
+        end
       end
 
       context 'when access locked' do
