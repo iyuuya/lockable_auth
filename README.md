@@ -7,7 +7,7 @@ Lock when authentication fails.
 Add this line to your application's Gemfile:
 
 ```ruby
-gem 'lockable'
+gem 'lockable_auth'
 ```
 
 And then execute:
@@ -41,7 +41,7 @@ end
 class User < ApplicationRecord
   has_secure_password
 
-  include LockableAuth::Model # Please add after has_secure_password
+  include LockableAuth # Please add after has_secure_password
 end
 ```
 
@@ -51,7 +51,7 @@ end
 user = User.create(email: 'asdf@example.com', password: 'abcd1234', 'abcd1234')
 user.authenticate('abcd1234') #=> user
 
-user.authenticate('xxxxyyyy') #=> false and increment fail
+user.authenticate('xxxxyyyy') #=> false and increment failed_attempts
 user.authenticate('xxxxyyyy') #=> false
 user.authenticate('xxxxyyyy') #=> false
 user.authenticate('xxxxyyyy') #=> false
@@ -65,7 +65,7 @@ user.authenticate('xxxxyyyy') #=> false and lock
 User.maximum_attempts = 5 # Default 5. Disable lock when this parameter is 0
 
 # Time interval to unlock the account
-User.unlockn_in = 1.hour # Default 1 hour. Disable lock when this parameter is 0
+User.unlock_in = 1.hour # Default 1 hour. Disable lock when this parameter is 0
 ```
 
 ## Contributing
