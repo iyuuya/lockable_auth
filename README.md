@@ -47,6 +47,7 @@ end
 
 ### Authenticate
 
+```ruby
 user = User.create(email: 'asdf@example.com', password: 'abcd1234', 'abcd1234')
 user.authenticate('abcd1234') #=> user
 
