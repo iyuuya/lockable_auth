@@ -13,7 +13,7 @@ module LockableAuth
       attr_accessor :maximum_attempts, :unlock_in
     end
 
-    self.instance_eval do
+    instance_eval do
       @maximum_attempts = DEFAULT_MAXIMUM_ATTEMPTS
       @unlock_in = DEFAULT_UNLOCK_IN
     end
@@ -43,8 +43,7 @@ module LockableAuth
       unlock_access!
       self
     else
-      self.failed_attempts ||= 0
-      self.failed_attempts += 1
+      increment_failed_attemnpts
       if attempts_exceeded?
         lock_access!
       else
@@ -56,11 +55,16 @@ module LockableAuth
 
   protected
 
+  def increment_failed_attemnpts
+    self.failed_attempts ||= 0
+    self.failed_attempts += 1
+  end
+
   def attempts_exceeded?
-    (self.class.maximum_attempts != 0) and (self.failed_attempts >= self.class.maximum_attempts)
+    self.class.maximum_attempts.nonzero? && (self.failed_attempts >= self.class.maximum_attempts)
   end
 
   def lock_expired?
-    (self.class.unlock_in.to_i == 0) or (locked_at && locked_at < self.class.unlock_in.ago)
+    self.class.unlock_in.to_i.zero? || (locked_at && locked_at < self.class.unlock_in.ago)
   end
 end

@@ -8,7 +8,7 @@ class LockableAuthDummyBaseModel
 
   attr_accessor :failed_attempts, :locked_at
 
-  def save(*args)
+  def save(*_args)
     true
   end
 
@@ -16,7 +16,7 @@ class LockableAuthDummyBaseModel
     true
   end
 
-  def authenticate(unencrypted_password)
+  def authenticate(_unencrypted_password)
     self
   end
 end
