@@ -10,12 +10,13 @@ module LockableAuth
 
   included do
     class << self
-      attr_accessor :maximum_attempts, :unlock_in
+      attr_accessor :maximum_attempts, :unlock_in, :lock_enabled
     end
 
     instance_eval do
       @maximum_attempts = DEFAULT_MAXIMUM_ATTEMPTS
       @unlock_in = DEFAULT_UNLOCK_IN
+      @lock_enabled = true
     end
   end
 
@@ -39,7 +40,9 @@ module LockableAuth
 
     unlock_access! if lock_expired?
 
-    if super && !access_locked?
+    if super && !self.class.lock_enabled
+      self
+    elsif super && !access_locked?
       unlock_access!
       self
     else

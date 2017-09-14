@@ -34,8 +34,14 @@ RSpec.describe LockableAuthDummyModel do
     end
 
     describe '.unlock_in' do
-      it 'should default vlaue is 1 hour' do
+      it 'should default value is 1 hour' do
         expect(LockableAuthDummyModel.unlock_in).to eq 1.hour
+      end
+    end
+
+    describe '.lock_enabled' do
+      it 'should default value is true' do
+        expect(LockableAuthDummyModel.lock_enabled).to be_truthy
       end
     end
   end
@@ -125,39 +131,50 @@ RSpec.describe LockableAuthDummyModel do
         end
       end
 
-      context 'when not access locked' do
-        before { expect(dummy).to receive(:access_locked?).and_return(false) }
+      context 'when not lock enabled' do
+        before { LockableAuthDummyModel.lock_enabled = false }
+        after { LockableAuthDummyModel.lock_enabled = true }
 
-        it do
-          expect(dummy).to receive(:unlock_access!)
-          is_expected.to be_truthy
-        end
+        it { is_expected.to be_truthy }
       end
 
-      context 'when access locked' do
-        before do
-          expect(dummy).to receive(:access_locked?).and_return(true)
-          expect(dummy).to receive(:save).with(validate: false)
-        end
+      context 'when lock enabled' do
+        before { LockableAuthDummyModel.lock_enabled = true }
 
-        it { is_expected.to be_falsy }
-        it { expect { subject }.to change(dummy, :failed_attempts).by(1) }
-
-        context 'when attempts exceeded' do
-          before { expect(dummy).to receive(:attempts_exceeded?).and_return(true) }
+        context 'when not access locked' do
+          before { expect(dummy).to receive(:access_locked?).and_return(false) }
 
           it do
-            expect(dummy).to receive(:lock_access!).and_call_original
-            is_expected.to be_falsy
+            expect(dummy).to receive(:unlock_access!)
+            is_expected.to be_truthy
           end
         end
 
-        context 'when not attempts_exceeded' do
-          before { expect(dummy).to receive(:attempts_exceeded?).and_return(false) }
+        context 'when access locked' do
+          before do
+            expect(dummy).to receive(:access_locked?).and_return(true)
+            expect(dummy).to receive(:save).with(validate: false)
+          end
 
-          it do
-            expect(dummy).not_to receive(:lock_access!)
-            is_expected.to be_falsy
+          it { is_expected.to be_falsy }
+          it { expect { subject }.to change(dummy, :failed_attempts).by(1) }
+
+          context 'when attempts exceeded' do
+            before { expect(dummy).to receive(:attempts_exceeded?).and_return(true) }
+
+            it do
+              expect(dummy).to receive(:lock_access!).and_call_original
+              is_expected.to be_falsy
+            end
+          end
+
+          context 'when not attempts_exceeded' do
+            before { expect(dummy).to receive(:attempts_exceeded?).and_return(false) }
+
+            it do
+              expect(dummy).not_to receive(:lock_access!)
+              is_expected.to be_falsy
+            end
           end
         end
       end
