@@ -251,4 +251,22 @@ RSpec.describe LockableAuthDummyModel do
       it { is_expected.to be_truthy }
     end
   end
+
+  describe 'lock_enabled?' do
+    subject { dummy.send(:lock_enabled?) }
+
+    let(:dummy) { LockableAuthDummyModel.new }
+
+    context 'when lock_enabled is true' do
+      before { LockableAuthDummyModel.lock_enabled = true }
+
+      it { is_expected.to be_truthy }
+    end
+
+    context 'when lock_enabled is false' do
+      before { LockableAuthDummyModel.lock_enabled = false }
+
+      it { is_expected.to be_falsy }
+    end
+  end
 end

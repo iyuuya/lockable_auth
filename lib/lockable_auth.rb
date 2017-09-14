@@ -40,7 +40,7 @@ module LockableAuth
 
     unlock_access! if lock_expired?
 
-    if super && !self.class.lock_enabled
+    if super && !lock_enabled?
       self
     elsif super && !access_locked?
       unlock_access!
@@ -69,5 +69,9 @@ module LockableAuth
 
   def lock_expired?
     self.class.unlock_in.to_i.zero? || (locked_at && locked_at < self.class.unlock_in.ago)
+  end
+
+  def lock_enabled?
+    self.class.lock_enabled
   end
 end
