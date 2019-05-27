@@ -18,6 +18,6 @@ module LockableAuth
         assert_file migration_file[0], 
           /class AddLockableColumnsToUsers < ActiveRecord::Migration/
       end
-		end
-	end		
+    end
+  end
 end
