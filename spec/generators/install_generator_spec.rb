@@ -11,7 +11,7 @@ module LockableAuth
         run_generator
       end
 
-      it "creates the installation db migration" do
+      it 'creates the installation db migration' do
         migration_file = 
           Dir.glob("#{root_dir}/db/migrate/*add_lockable_columns_to_users.rb")
 
