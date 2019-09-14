@@ -7,8 +7,8 @@ require 'lockable_auth/version'
 Gem::Specification.new do |spec|
   spec.name          = 'lockable_auth'
   spec.version       = LockableAuth::VERSION
-  spec.authors       = ['iyuuya']
-  spec.email         = ['i.yuuya@gmail.com']
+  spec.authors       = ['iyuuya', 'shiva']
+  spec.email         = ['i.yuuya@gmail.com','nadarshiva.r@gmail.com']
 
   spec.summary       = 'Lock when authentication fails'
   spec.description   = 'Lock when authentication fails'
@@ -28,4 +28,5 @@ Gem::Specification.new do |spec|
   spec.add_development_dependency 'rspec', '~> 3.0'
   spec.add_development_dependency 'rubocop', '~> 0.49.1'
   spec.add_development_dependency 'timecop', '~> 0.9.1'
+  spec.add_development_dependency 'generator_spec'
 end

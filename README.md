@@ -24,17 +24,8 @@ Or install it yourself as:
 
 Add `locked_at` and `failed_attempts` columns.
 
-```shell
-bin/rails generate migration AddLockableColumnsToUsers locked_at:datetime failed_attempts:integer
-```
-
 ```ruby
-class AddLockableColumnsToUsers < ActiveRecord::Migration[5.0]
-  def change
-    add_column :users, :locked_at, :datetime
-    add_column :users, :failed_attempts, :integer, default: 0, null: false
-  end
-end
+rails g lockable_auth:install
 ```
 
 ```ruby
