@@ -7,8 +7,8 @@ require 'lockable_auth/version'
 Gem::Specification.new do |spec|
   spec.name          = 'lockable_auth'
   spec.version       = LockableAuth::VERSION
-  spec.authors       = ['iyuuya', 'shiva']
-  spec.email         = ['i.yuuya@gmail.com','nadarshiva.r@gmail.com']
+  spec.authors       = %w[iyuuya shiva]
+  spec.email         = ['i.yuuya@gmail.com', 'nadarshiva.r@gmail.com']
 
   spec.summary       = 'Lock when authentication fails'
   spec.description   = 'Lock when authentication fails'
@@ -22,7 +22,9 @@ Gem::Specification.new do |spec|
   spec.require_paths = ['lib']
 
   spec.add_dependency 'activesupport', '>= 4.2'
+  spec.add_development_dependency 'activerecord', '>= 4.2'
   spec.add_development_dependency 'activemodel', '>= 4.2'
+  spec.add_development_dependency 'railties', '>= 4.2'
   spec.add_development_dependency 'bundler', '~> 1.15'
   spec.add_development_dependency 'rake', '~> 10.0'
   spec.add_development_dependency 'rspec', '~> 3.0'

@@ -2,6 +2,7 @@
 
 require 'bundler/setup'
 require 'timecop'
+require 'generator_spec'
 require 'lockable_auth'
 
 RSpec.configure do |config|

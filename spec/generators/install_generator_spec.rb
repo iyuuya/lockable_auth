@@ -1,23 +1,20 @@
-require "generator_spec"
+# frozen_string_literal: true
 
-module LockableAuth
-  module Generators
-    describe 'InstallGenerator', :type => :generator do
+require 'spec_helper'
 
-      destination File.expand_path("../../tmp", __FILE__)
+require_relative '../../lib/generators/lockable_auth/install_generator'
 
-      before :all do
-        prepare_destination
-        run_generator
-      end
+RSpec.describe LockableAuth::Generators::InstallGenerator, type: :generator do
+  destination File.expand_path('../../tmp', __dir__)
 
-      it 'creates the installation db migration' do
-        migration_file = 
-          Dir.glob("#{root_dir}/db/migrate/*add_lockable_columns_to_users.rb")
+  before :all do
+    prepare_destination
+    run_generator
+  end
 
-        assert_file migration_file[0], 
-          /class AddLockableColumnsToUsers < ActiveRecord::Migration/
-      end
-    end
+  it 'creates the installation db migration' do
+    migration_file = Dir.glob("#{destination_root}/db/migrate/*add_lockable_columns_to_users.rb")
+
+    assert_file migration_file[0], /class AddLockableColumnsToUsers < ActiveRecord::Migration/
   end
 end
