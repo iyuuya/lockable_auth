@@ -14,10 +14,8 @@ module LockableAuth
 
       def copy_migrations
         migration_template 'add_lockable_columns_to_users.rb',
-          'db/migrate/add_lockable_columns_to_users.rb'
+                           'db/migrate/add_lockable_columns_to_users.rb'
       end
-			
     end
-		
   end
 end
